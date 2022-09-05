@@ -1,8 +1,8 @@
-package dmk.pg.jreleaser.lib.service.impl;
+package cz.masci.pg.releaser.lib.service.impl;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import dmk.pg.jreleaser.lib.service.Publisher;
+import cz.masci.pg.releaser.lib.service.Publisher;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.junit.jupiter.api.AfterEach;

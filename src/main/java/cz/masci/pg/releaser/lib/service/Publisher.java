@@ -1,4 +1,4 @@
-package dmk.pg.jreleaser.lib.service;
+package cz.masci.pg.releaser.lib.service;
 
 public interface Publisher {
   /**

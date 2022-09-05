@@ -4,14 +4,38 @@
         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>dmk.pg.releaser</groupId>
+    <groupId>cz.masci.pg.releaser</groupId>
     <artifactId>pg-releaser-lib</artifactId>
-    <version>${revision}</version>
-    <name>PG - Releaser - library</name>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>PlayGround - Releaser library </name>
+    <description>A demo for deployment to the Central Repository via OSSRH</description>
+    <url>https://github.com/GrolarDan/pg-releaser-lib</url>
+
+    <licenses>
+        <license>
+            <name>GNU GPL v3.0</name>
+            <url>https://www.gnu.org/licenses/gpl-3.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Daniel Masek</name>
+            <email>daniel@masci.cz</email>
+            <organization>MASCI-CZ</organization>
+            <organizationUrl>https://github.com/masci-cz</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/GrolarDan/pg-releaser-lib.git</connection>
+        <developerConnection>scm:git:ssh://github.com:GrolarDan/pg-releaser-lib.git</developerConnection>
+        <url>https://github.com/GrolarDan/pg-releaser-lib.git/tree/master</url>
+    </scm>
 
     <properties>
-        <revision>0.0.1-SNAPSHOT</revision>
-
         <java.version>17</java.version>
         <junit.version>5.9.0</junit.version>
 
@@ -49,5 +73,13 @@
             </plugin>
         </plugins>
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>ossrh</id>
+            <name>Central Repository OSSRH</name>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
 </project>

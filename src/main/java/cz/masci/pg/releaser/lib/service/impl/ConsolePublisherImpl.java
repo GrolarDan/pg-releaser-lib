@@ -1,6 +1,6 @@
-package dmk.pg.jreleaser.lib.service.impl;
+package cz.masci.pg.releaser.lib.service.impl;
 
-import dmk.pg.jreleaser.lib.service.Publisher;
+import cz.masci.pg.releaser.lib.service.Publisher;
 
 /**
  * Publish message to console using {@code Object.toString()} method.

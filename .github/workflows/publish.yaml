@@ -5,6 +5,9 @@ on:
       - master
     types: [closed]
 
+env:
+  MAVEN_OPTS: --add-opens=java.base/java.util=ALL-UNNAMED
+
 jobs:
   publish:
     name: Publish package

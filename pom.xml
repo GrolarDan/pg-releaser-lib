@@ -90,14 +90,6 @@
                     <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
                     <autoReleaseAfterClose>false</autoReleaseAfterClose>
                 </configuration>
-                <!-- https://stackoverflow.com/questions/70153962/nexus-staging-maven-plugin-maven-deploy-failed-an-api-incompatibility-was-enco -->
-<!--                <dependencies>-->
-<!--                    <dependency>-->
-<!--                        <groupId>com.thoughtworks.xstream</groupId>-->
-<!--                        <artifactId>xstream</artifactId>-->
-<!--                        <version>1.4.15</version> &lt;!&ndash; apparently this needs to be exactly this version &ndash;&gt;-->
-<!--                    </dependency>-->
-<!--                </dependencies>-->
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

@@ -1,9 +1,9 @@
 name: Publish package to the Maven Central Repository
 on:
-  release:
+  pull_request:
     branches:
       - master
-    types: [created]
+    types: [closed]
 
 env:
   MAVEN_OPTS: --add-opens=java.base/java.util=ALL-UNNAMED

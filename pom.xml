@@ -7,10 +7,12 @@
     <version>0.0.9-SNAPSHOT</version>
     <packaging>jar</packaging>
 
+    <!-- Project name, description and URL -->
     <name>PlayGround - Releaser library</name>
-    <description>A demo for deployment to the Central Repository via OSSRH</description>
+    <description>A demo for deployment to the Maven Central Repository via OSSRH</description>
     <url>https://github.com/GrolarDan/pg-releaser-lib</url>
 
+    <!-- License Information -->
     <licenses>
         <license>
             <name>GNU GPL v3.0</name>
@@ -18,15 +20,17 @@
         </license>
     </licenses>
 
+    <!-- Developer Information-->
     <developers>
         <developer>
-            <name>Daniel Masek</name>
+            <name>Daniel Mašek</name>
             <email>daniel@masci.cz</email>
             <organization>MASCI-CZ</organization>
             <organizationUrl>https://github.com/masci-cz</organizationUrl>
         </developer>
     </developers>
 
+    <!-- Source Code Management information -->
     <scm>
         <connection>scm:git:git://github.com/GrolarDan/pg-releaser-lib.git</connection>
         <developerConnection>scm:git:https://github.com/GrolarDan/pg-releaser-lib.git</developerConnection>
@@ -34,6 +38,7 @@
         <tag>HEAD</tag>
     </scm>
 
+    <!-- Artifact related sections -->
     <properties>
         <java.version>17</java.version>
         <junit.version>5.9.0</junit.version>
@@ -73,6 +78,7 @@
         </dependency>
     </dependencies>
 
+    <!-- Build process -->
     <build>
         <plugins>
             <plugin>
@@ -80,6 +86,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.compiler.plugin.version}</version>
             </plugin>
+            <!-- Deploy components to OSSRH -->
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
@@ -88,9 +95,11 @@
                 <configuration>
                     <serverId>ossrh</serverId>
                     <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-                    <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                    <!-- Automatic release to the Central Repository without manual inspect -->
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
             </plugin>
+            <!-- Prepare new release to be deployed (runs nexus-staging maven plugin) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
@@ -98,7 +107,9 @@
                 <configuration>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <useReleaseProfile>false</useReleaseProfile>
+                    <!-- Used build profile -->
                     <releaseProfiles>release</releaseProfiles>
+                    <!-- Tells maven to run deploy with nexus staging plugin -->
                     <goals>deploy nexus-staging:release</goals>
                 </configuration>
             </plugin>
@@ -110,6 +121,7 @@
             <id>release</id>
             <build>
                 <plugins>
+                    <!-- Attach sources -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
@@ -123,6 +135,7 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <!-- Attach javadoc -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
@@ -136,6 +149,7 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <!-- Sign artifacts -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
@@ -148,13 +162,25 @@
                                 </goals>
                             </execution>
                         </executions>
+                        <configuration>
+                            <!-- Prevent gpg from using pinentry programs -->
+                            <gpgArguments>
+                                <arg>--pinentry-mode</arg>
+                                <arg>loopback</arg>
+                            </gpgArguments>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
         </profile>
     </profiles>
 
+    <!-- OSSRH repository urls (It is not needed when using nexus staging plugin as it is in this pom) -->
     <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
         <repository>
             <id>ossrh</id>
             <name>Central Repository OSSRH</name>

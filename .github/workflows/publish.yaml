@@ -1,9 +1,11 @@
 name: Publish package to the Maven Central Repository
 on:
-  pull_request:
-    branches:
-      - master
-    types: [closed]
+  workflow_dispatch:
+
+#  pull_request:
+#    branches:
+#      - master
+#    types: [closed]
 
 env:
   MAVEN_OPTS: --add-opens=java.base/java.util=ALL-UNNAMED
@@ -12,7 +14,7 @@ jobs:
   publish:
     name: Publish package
     # run only when pull request was merged
-    if: ${{ github.event.pull_request.merged }}
+#    if: ${{ github.event.pull_request.merged }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -27,6 +29,10 @@ jobs:
           server-password: MAVEN_CENTRAL_TOKEN
           gpg-private-key: ${{ secrets.GPG_SECRET_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE  # env variable for GPG private key passphrase
+
+      - name: Check settings.xml
+        run: |
+          cat /home/runner/.m2/settings.xml
 
       - id: publish-to-central
         name: Publish package

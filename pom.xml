@@ -4,7 +4,7 @@
 
     <groupId>cz.masci.pg.releaser</groupId>
     <artifactId>pg-releaser-lib</artifactId>
-    <version>0.0.10-SNAPSHOT</version>
+    <version>0.0.10</version>
     <packaging>jar</packaging>
 
     <!-- Project name, description and URL -->
@@ -35,7 +35,7 @@
         <connection>scm:git:git://github.com/GrolarDan/pg-releaser-lib.git</connection>
         <developerConnection>scm:git:https://github.com/GrolarDan/pg-releaser-lib.git</developerConnection>
         <url>https://github.com/GrolarDan/pg-releaser-lib.git/tree/master</url>
-        <tag>HEAD</tag>
+        <tag>pg-releaser-lib-0.0.10</tag>
     </scm>
 
     <!-- Artifact related sections -->

@@ -35,6 +35,8 @@ jobs:
           MAVEN_CENTRAL_TOKEN: ${{ secrets.OSSRH_TOKEN }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_SECRET_KEY_PASSWORD }}
         run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
           mvn \
             --no-transfer-progress \
             --batch-mode \

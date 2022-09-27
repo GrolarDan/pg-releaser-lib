@@ -287,8 +287,15 @@ We need to provide Github with credentials same as we did in local deployment.
         MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
         MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_SECRET_KEY_PASSWORD }}
       run: |
+        git config user.name github-actions
+        git config user.email github-actions@github.com
         mvn \
           --no-transfer-progress \
           --batch-mode \
           release:prepare release:perform
+    ```
+   2. Configure the git `user.name` and `user.email` because release submits changes to the git
+   ```yaml
+   git config user.name github-actions
+   git config user.email github-actions@github.com 
     ```

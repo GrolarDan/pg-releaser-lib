@@ -29,9 +29,10 @@ jobs:
           gpg-private-key: ${{ secrets.GPG_SECRET_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE  # env variable for GPG private key passphrase
 
-      - name: Check settings.xml
+      - name: Check settings
         run: |
           cat /home/runner/.m2/settings.xml
+          gpg --list-secret-keys --keyid-format LONG
 
       - id: publish-to-central
         name: Publish package

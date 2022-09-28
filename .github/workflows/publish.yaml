@@ -31,7 +31,6 @@ jobs:
 
       - name: Check settings
         run: |
-          cat <(echo -e "${{ secrets.GPG_SECRET_KEY }}") | gpg --batch --import
           cat /home/runner/.m2/settings.xml
           gpg --list-secret-keys --keyid-format LONG
 

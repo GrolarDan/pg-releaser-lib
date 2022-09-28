@@ -35,13 +35,13 @@ jobs:
         run: gpg --help
         
       - name: List Secrets
-        run: gpg --list-secrets-keys --keyid-format LONG
+        run: gpg --list-secret-keys --keyid-format LONG
         
       - name: Import GPG Key
         run: cat <(echo -e "${{ secrets.GPG_SECRET_KEY }}") | gpg --batch --import
         
       - name: List Secrets
-        run: gpg --list-secrets-keys --keyid-format LONG
+        run: gpg --list-secret-keys --keyid-format LONG
         
       - id: publish-to-central
         name: Publish package

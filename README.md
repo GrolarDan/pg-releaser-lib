@@ -167,8 +167,9 @@ At the end runs the deployment through nexus staging plugin.
             <configuration>
                 <serverId>ossrh</serverId>
                 <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-                <!-- Automatic release to the Central Repository without manual inspect -->
-                <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                <!-- Automatic release to the Central Repository without manual inspect must be false -->
+                <!-- because there is release call at the end of maven release plugin -->
+                <autoReleaseAfterClose>false</autoReleaseAfterClose>
             </configuration>
         </plugin>
         <!-- Prepare new release to be deployed (runs nexus-staging maven plugin) -->
@@ -237,11 +238,10 @@ We need to provide Github with credentials same as we did in local deployment.
 1. Export your gpg private key from the system that you have created it.
    1. Find your key-id (using `gpg --list-secret-keys --keyid-format=long`)
    2. Export the gpg secret key to an ASCII file using `gpg --export-secret-keys -a <key-id> > secret.txt`
-   3. Edit `secret.txt` using a plain text editor, and replace all newlines with a literal "\n" until everything is on a single line
 2. Set up GitHub Actions secrets
    1. Create a secret called `OSSRH_USERNAME` containing the account id to the Sonatype Jira
    2. Create a secret called `OSSRH_TOKEN` containing the password to the Sonatype Jira
-   3. Create a secret called `GPG_SECRET_KEY` using the text from your edited `secret.txt` file (the whole text should be in a single line)
+   3. Create a secret called `GPG_SECRET_KEY` using the text from your edited `secret.txt` file (with all the `LF`)
    4. Create a secret called `GPG_SECRET_KEY_PASSWORD` containing the password for your gpg secret key
 3. Create a GitHub Actions step to set up java with GPG secret key (explained [here](https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#Publishing-using-Apache-Maven))
    1. Add an action similar to:
@@ -252,10 +252,10 @@ We need to provide Github with credentials same as we did in local deployment.
           java-version: '17'
           distribution: 'temurin'
           cache: 'maven'
-          server-id: ossrh
-          server-username: MAVEN_USERNAME
-          server-password: MAVEN_CENTRAL_TOKEN
-          gpg-private-key: ${{ secrets.GPG_SECRET_KEY }}
+          server-id: ossrh  # Value of the distributionManagement/repository/id field of the pom.xml
+          server-username: MAVEN_USERNAME # env variable for username in deploy
+          server-password: MAVEN_CENTRAL_TOKEN # env variable for token in deploy
+          gpg-private-key: ${{ secrets.GPG_SECRET_KEY }} # Value of the GPG private key to import - without any modification
           gpg-passphrase: MAVEN_GPG_PASSPHRASE  # env variable for GPG private key passphrase
     ```
    2. `settings.xml` file is created with this content

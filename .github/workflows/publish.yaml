@@ -26,7 +26,6 @@ jobs:
           server-id: ossrh
           server-username: MAVEN_USERNAME
           server-password: MAVEN_CENTRAL_TOKEN
-          gpg-private-key: ${{ secrets.GPG_SECRET_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE  # env variable for GPG private key passphrase
 
       - name: Check settings
@@ -34,6 +33,12 @@ jobs:
         
       - name: Check GPG
         run: gpg --help
+        
+      - name: List Secrets
+        run: gpg --list-secrets-keys --keyid-format LONG
+        
+      - name: Import GPG Key
+        run: cat <(echo -e "${{ secrets.GPG_SECRET_KEY }}") | gpg --batch --import
         
       - name: List Secrets
         run: gpg --list-secrets-keys --keyid-format LONG

@@ -145,10 +145,9 @@ Sonatype has some [Requirements](https://central.sonatype.org/publish/requiremen
 
 ### Release and deploy
 
-Setup release plugin which increases the release version and push it to the github.  
-For build uses the release profile defined in profiles section.  
-At the end runs the deployment through nexus staging plugin.  
-
+Setup release plugin which increases the version and push it to the github (Can't push to protected branch - _working on this_).  
+Release plugin is set up to use the `release` profile defined in profiles section to run java source, java doc and sign plugins during deployment.  
+At the end runs the deployment through nexus staging plugin because the nexus plugin overrides the default maven deploy plugin.  
 
 ```xml
 <build>
@@ -168,7 +167,7 @@ At the end runs the deployment through nexus staging plugin.
                 <serverId>ossrh</serverId>
                 <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
                 <!-- Automatic release to the Central Repository without manual inspect must be false -->
-                <!-- because there is release call at the end of maven release plugin -->
+                <!-- because there is release call at the end of the maven release plugin -->
                 <autoReleaseAfterClose>false</autoReleaseAfterClose>
             </configuration>
         </plugin>
@@ -182,7 +181,7 @@ At the end runs the deployment through nexus staging plugin.
                 <useReleaseProfile>false</useReleaseProfile>
                 <!-- Used build profile -->
                 <releaseProfiles>release</releaseProfiles>
-                <!-- Tells maven to run deploy with nexus staging plugin -->
+                <!-- Tells maven to run deploy at the end and release deployed nexus staging repository with the nexus staging plugin -->
                 <goals>deploy nexus-staging:release</goals>
             </configuration>
         </plugin>
@@ -194,7 +193,7 @@ At the end runs the deployment through nexus staging plugin.
 
 To deploy to OSSRH we need provide maven with credentials.  
 Also GPG plugin needs passphrase to the private key.  
-Because we don't want to publish credentials I found useful using environment variables and these then use in maven build.
+Because we don't want to publish credentials I found useful using environment variables and use them in maven build process. 
 
 #### Environment variables
 
@@ -203,6 +202,7 @@ Because we don't want to publish credentials I found useful using environment va
 - `env.GPG_PASSPHRASE` - passphrase used to generate GPG private key (explained [here](#gpg))
 
 #### settings.xml
+in `.m2` directory
 ```xml
   <settings>
     <servers>
@@ -241,7 +241,7 @@ We need to provide Github with credentials same as we did in local deployment.
 2. Set up GitHub Actions secrets
    1. Create a secret called `OSSRH_USERNAME` containing the account id to the Sonatype Jira
    2. Create a secret called `OSSRH_TOKEN` containing the password to the Sonatype Jira
-   3. Create a secret called `GPG_SECRET_KEY` using the text from your edited `secret.txt` file (with all the `LF`)
+   3. Create a secret called `GPG_SECRET_KEY` using the text from your `secret.txt` file (with all the `LF`)
    4. Create a secret called `GPG_SECRET_KEY_PASSWORD` containing the password for your gpg secret key
 3. Create a GitHub Actions step to set up java with GPG secret key (explained [here](https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#Publishing-using-Apache-Maven))
    1. Add an action similar to:

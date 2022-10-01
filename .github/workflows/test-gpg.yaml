@@ -20,7 +20,10 @@ jobs:
           gpg-passphrase: MAVEN_GPG_PASSPHRASE  # env variable for GPG private key passphrase
 
       - name: Check Node Package Execute
-        run: npm -v
+        run: |
+          npm -v
+          npm install @octokit/auth-app
+          const { createAppAuth } = require("@octokit/auth-app")
 
       - name: Check settings
         run: cat /home/runner/.m2/settings.xml

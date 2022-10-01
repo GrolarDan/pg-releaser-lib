@@ -1,6 +1,5 @@
 # Publish java artifact to Maven Central Repository
 
-
 Publish java packages to Maven Central Repository through Sonatype OSSRH (OSS Repository Hosting) with maven tool and GitHub actions.    
 It is based on guides from Sonatype, Maven and GitHub pages.
 

@@ -1,10 +1,9 @@
 name: Publish package to the Maven Central Repository
-on: workflow_dispatch
-    
-#   pull_request:
-#     branches:
-#       - master
-#     types: [closed]
+on:
+  pull_request:
+    branches:
+      - master
+    types: [closed]
 
 env:
   MAVEN_OPTS: --add-opens=java.base/java.util=ALL-UNNAMED

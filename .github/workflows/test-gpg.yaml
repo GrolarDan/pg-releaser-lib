@@ -20,7 +20,7 @@ jobs:
           gpg-passphrase: MAVEN_GPG_PASSPHRASE  # env variable for GPG private key passphrase
 
       - name: Check Node Package Execute
-        run: npx -v
+        run: npm -v
 
       - name: Check settings
         run: cat /home/runner/.m2/settings.xml

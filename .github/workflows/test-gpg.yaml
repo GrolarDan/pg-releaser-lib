@@ -6,7 +6,21 @@ jobs:
     name: Publish package
     runs-on: ubuntu-latest
     steps:
+      - name: Get token
+        id: get_token
+        uses: machine-learning-apps/actions-app-token@master
+        with:
+          APP_PEM: ${{ secrets.APP_PEM }}
+          APP_ID: ${{ secrets.APP_ID }}
+
+      - name: Get App Installation Token
+        run: |
+          echo "This token is masked: ${TOKEN}"
+        env: 
+          TOKEN: ${{ steps.get_token.outputs.app_token }}
+      
       - uses: actions/checkout@v3
+      
       - name: Set up Maven Central Repository
         uses: actions/setup-java@v3
         with:
@@ -18,12 +32,6 @@ jobs:
           server-password: MAVEN_CENTRAL_TOKEN
           gpg-private-key: ${{ secrets.GPG_SECRET_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE  # env variable for GPG private key passphrase
-
-      - name: Check Node Package Execute
-        run: |
-          npm -v
-          npm install @octokit/auth-app
-          const { createAppAuth } = require("@octokit/auth-app")
 
       - name: Check settings
         run: cat /home/runner/.m2/settings.xml

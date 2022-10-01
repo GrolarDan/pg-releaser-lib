@@ -52,8 +52,8 @@ jobs:
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_SECRET_KEY_PASSWORD }}
           GITHUB_TOKEN: ${{ steps.get_token.outputs.app_token }}
         run: |
-          git config user.name commit-bot
-          git config user.email commit-bot@github.com
+          git config user.name app-bot
+          git config user.email app-bot@github.com
           mvn \
             --no-transfer-progress \
             --batch-mode \

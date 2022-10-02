@@ -284,8 +284,9 @@ We need to provide Github with credentials same as we did in local deployment.
       2. Uncheck Webhook
       3. Generate Private key and download the `.pem` file
       4. Set permissions
-         1. Content - Read and write
-         2. Metadata - Read only
+         1. Administration - Read and write
+         2. Content - Read and write
+         3. Metadata - Read only
    3. Install GitHub App to account/organization
 5. Add new secrets to the repository
    1. Create secret called `APP_ID` containing the GitHub App `App ID`

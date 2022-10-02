@@ -1,5 +1,8 @@
 name: Test token to
-on: workflow_dispatch
+on:
+  push:
+    branches:
+      - test
 
 env:
   MAVEN_OPTS: --add-opens=java.base/java.util=ALL-UNNAMED

@@ -1,4 +1,4 @@
-name: Test publish with GPG signing and installation token
+name: Test token to
 on: workflow_dispatch
 
 env:

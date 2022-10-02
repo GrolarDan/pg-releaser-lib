@@ -277,7 +277,43 @@ We need to provide Github with credentials same as we did in local deployment.
     </settings>
    ```
    3. The private key will be written to a file in the runner's temp directory, the private key file will be imported into the GPG keychain, and then the file will be promptly removed before proceeding with the rest of the setup process.
-4. Bring it all together, and create a GitHub Actions step to publish
+4. Prepare GitHub App to bypass master branch protection
+   1. In account/organization settings go to Developer Settings and GitHub Apps
+   2. Create new GitHub App
+      1. Remember `App ID`
+      2. Uncheck Webhook
+      3. Generate Private key and download the `.pem` file
+      4. Set permissions
+         1. Content - Read and write
+         2. Metadata - Read only
+   3. Install GitHub App to account/organization
+5. Add new secrets to the repository
+   1. Create secret called `APP_ID` containing the GitHub App `App ID`
+   2. Create secret called `APP_PEM` containing GitHub App private key in base64 format in one line
+      1. `cat your_app_key.pem | base64 -w 0 && echo`
+6. Get installation token
+    ```yaml
+    - name: Get token
+      id: get_token
+      uses: machine-learning-apps/actions-app-token@master
+      with:
+        APP_PEM: ${{ secrets.APP_PEM }}
+        APP_ID: ${{ secrets.APP_ID }}
+
+    - name: Get App Installation Token
+      run: |
+        echo "This token is masked: ${TOKEN}"
+      env:
+        TOKEN: ${{ steps.get_token.outputs.app_token }}
+    ```
+7. Use token in checkout step
+    ```yaml
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        token: ${{ steps.get_token.outputs.app_token }}    
+    ```
+8. Bring it all together, and create a GitHub Actions step to publish
    1. Add an action similar to:
     ```yaml
     - id: publish-to-central

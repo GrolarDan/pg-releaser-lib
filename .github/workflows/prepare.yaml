@@ -3,7 +3,6 @@ on:
   pull_request:
     branches:
       - master
-    types: [opened, edited]
 
 env:
   MAVEN_OPTS: --add-opens=java.base/java.util=ALL-UNNAMED

@@ -20,4 +20,4 @@ jobs:
           cache: 'maven'
 
       - name: Verify package
-        run: mvn verify
+        run: mvn verify --no-transfer-progress

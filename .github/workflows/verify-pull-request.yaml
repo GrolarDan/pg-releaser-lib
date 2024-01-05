@@ -27,4 +27,4 @@ jobs:
       - name: Verify package
         env:
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_SECRET_KEY_PASSWORD }}
-        run: mvn verify -Prelease
+        run: mvn verify -Prelease --no-transfer-progress

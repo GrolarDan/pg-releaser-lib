@@ -50,6 +50,12 @@ gpg --list-keys
 gpg --keyserver keyserver.ubuntu.com --send-keys YOUR.GENERATED.KEY
 ```
 
+**Useful commands and info**
+```shell
+# change GPG home directory location
+# set environment variable GNUPGHOME=/path/to/the/folder
+```
+
 ## Deploy to OSSRH with Apache Maven
 
 ### OSSRH Requirements

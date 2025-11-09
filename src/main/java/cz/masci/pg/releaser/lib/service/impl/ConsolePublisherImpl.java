@@ -7,8 +7,14 @@ import cz.masci.pg.releaser.lib.service.Publisher;
  */
 public class ConsolePublisherImpl implements Publisher {
 
-  @Override
-  public <T> void publish(T message) {
-    System.out.println(message);
-  }
+    /**
+     * Constructor.
+     */
+    public ConsolePublisherImpl() {
+    }
+
+    @Override
+    public <T> void publish(T message) {
+        System.out.println(message);
+    }
 }

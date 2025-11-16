@@ -15,23 +15,17 @@ jobs:
     if: ${{ github.event.pull_request.merged }}
     runs-on: ubuntu-latest
     steps:
-      - name: Get token
-        id: get_token
-        uses: cilium/actions-app-token@master
+      - name: Generate a token
+        id: generate-token
+        uses: actions/create-github-app-token@v2
         with:
-          APP_PEM: ${{ secrets.APP_PEM }}
-          APP_ID: ${{ secrets.APP_ID }}
-
-      - name: Get App Installation Token
-        run: |
-          echo "This token is masked: ${TOKEN}"
-        env:
-          TOKEN: ${{ steps.get_token.outputs.app_token }}
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PEM }}
 
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          token: ${{ steps.get_token.outputs.app_token }}
+          token: ${{ steps.generate-token.outputs.token }}
 
       - name: Set up Maven Central Repository
         uses: actions/setup-java@v3
@@ -54,7 +48,7 @@ jobs:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_CENTRAL_TOKEN: ${{ secrets.OSSRH_TOKEN }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_SECRET_KEY_PASSWORD }}
-          GITHUB_TOKEN: ${{ steps.get_token.outputs.app_token }}
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
           git config user.name app-bot
           git config user.email app-bot@github.com

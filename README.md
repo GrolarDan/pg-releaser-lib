@@ -1,6 +1,6 @@
 # Publish java artifact to Maven Central Repository
 
-Publish java packages to Maven Central Repository through Sonatype OSSRH (OSS Repository Hosting) with maven tool and GitHub actions.    
+Publish java packages to Maven Central Repository through Sonatype Central Portal with maven tool and GitHub actions.    
 It is based on guides from Sonatype, Maven and GitHub pages.
 
 - [Sonatype](https://central.sonatype.org/publish/publish-guide)
@@ -20,12 +20,12 @@ Other sources
 ## Prerequisites  
 
 Before publishing artifact to the Central Repository, you need to initiate Sonatype.  
-Sonatype Initial Setup is in detail explained [here](https://central.sonatype.org/publish/publish-guide/). 
+Sonatype Initial Setup is in detail explained [here](https://central.sonatype.org/register/central-portal/). 
 
 ### Sonatype Initial Setup
 
-  1. [Create account](https://issues.sonatype.org/secure/Signup!default.jspa) in OSSRH Jira
-  2. [Create ticket](https://issues.sonatype.org/secure/CreateIssue.jspa?pid=10134&issuetype=21) to register group id  
+  1. [Create account](https://central.sonatype.com) in OSSRH Jira
+  2. [Create and verify namespace](https://central.sonatype.org/register/namespace/) to register group id  
     If you use your own domain you need to add DNS TXT record to your domain
       - name: `@`
       - type: `TXT`
@@ -56,9 +56,9 @@ gpg --keyserver keyserver.ubuntu.com --send-keys YOUR.GENERATED.KEY
 # set environment variable GNUPGHOME=/path/to/the/folder
 ```
 
-## Deploy to OSSRH with Apache Maven
+## Deploy to Central Portal with Apache Maven
 
-### OSSRH Requirements
+### Sonatype Requirements
 
 Sonatype has some [Requirements](https://central.sonatype.org/publish/requirements) which can be set up in the maven pom file. 
 
@@ -151,7 +151,7 @@ Sonatype has some [Requirements](https://central.sonatype.org/publish/requiremen
 
 ### Release and deploy
 
-Setup release plugin which increases the version and push it to the github (Can't push to protected branch - _working on this_).  
+Setup release plugin which increases the version and push it to the Github (To push to the protected branch use generated Github token and application [Authenticating with a github app](https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/making-authenticated-api-requests-with-a-github-app-in-a-github-actions-workflow)).  
 Release plugin is set up to use the `release` profile defined in profiles section to run java source, java doc and sign plugins during deployment.  
 At the end runs the deployment through nexus staging plugin because the nexus plugin overrides the default maven deploy plugin.  
 
@@ -163,21 +163,22 @@ At the end runs the deployment through nexus staging plugin because the nexus pl
             <artifactId>maven-compiler-plugin</artifactId>
             <version>${maven.compiler.plugin.version}</version>
         </plugin>
-        <!-- Deploy components to OSSRH -->
+        <!-- Deploy components to Sonatype Central Portal -->
         <plugin>
-            <groupId>org.sonatype.plugins</groupId>
-            <artifactId>nexus-staging-maven-plugin</artifactId>
-            <version>${nexus.staging.plugin.version}</version>
+            <groupId>org.sonatype.central</groupId>
+            <artifactId>central-publishing-maven-plugin</artifactId>
+            <version>${central.publishing.maven.plugin.version}</version>
             <extensions>true</extensions>
             <configuration>
-                <serverId>ossrh</serverId>
-                <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-                <!-- Automatic release to the Central Repository without manual inspect must be false -->
-                <!-- because there is release call at the end of the maven release plugin -->
-                <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                <!-- which server from settings.xml to use -->
+                <publishingServerId>central</publishingServerId>
+                <!-- automatically publish after staging repository is closed -->
+                <autoPublish>true</autoPublish>
+                <!-- wait until the release is published -->
+                <waitUntil>published</waitUntil>
             </configuration>
         </plugin>
-        <!-- Prepare new release to be deployed (runs nexus-staging maven plugin) -->
+        <!-- Prepare new release to be deployed (runs central publishing maven plugin which is set to run in deploy goal) -->
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-release-plugin</artifactId>
@@ -187,8 +188,6 @@ At the end runs the deployment through nexus staging plugin because the nexus pl
                 <useReleaseProfile>false</useReleaseProfile>
                 <!-- Used build profile -->
                 <releaseProfiles>release</releaseProfiles>
-                <!-- Tells maven to run deploy at the end and release deployed nexus staging repository with the nexus staging plugin -->
-                <goals>deploy nexus-staging:release</goals>
             </configuration>
         </plugin>
     </plugins>
@@ -197,14 +196,14 @@ At the end runs the deployment through nexus staging plugin because the nexus pl
 
 ### Distribution Management and Authentication
 
-To deploy to OSSRH we need provide maven with credentials.  
+To deploy to central portal we need provide maven with credentials.  
 Also GPG plugin needs passphrase to the private key.  
 Because we don't want to publish credentials I found useful using environment variables and use them in maven build process. 
 
 #### Environment variables
 
-- `env.OSSRH_USERNAME` - username to the Sonatype JIRA account
-- `env.OSSRH_TOKEN` - token to the Sonatype JIRA account
+- `env.OSSRH_USERNAME` - Sonatype user token username (generated in Sonatype portal)
+- `env.OSSRH_TOKEN` - Sonatype user token password (generated in Sonatype portal)
 - `env.GPG_PASSPHRASE` - passphrase used to generate GPG private key (explained [here](#gpg))
 
 #### settings.xml
@@ -213,7 +212,7 @@ in `.m2` directory
   <settings>
     <servers>
       <server>
-        <id>ossrh</id>
+        <id>central</id>
         <username>${env.OSSRH_USERNAME}</username>
         <password>${env.OSSRH_TOKEN}</password>
       </server>
@@ -245,8 +244,8 @@ We need to provide Github with credentials same as we did in local deployment.
    1. Find your key-id (using `gpg --list-secret-keys --keyid-format=long`)
    2. Export the gpg secret key to an ASCII file using `gpg --export-secret-keys -a <key-id> > secret.txt`
 2. Set up GitHub Actions secrets
-   1. Create a secret called `OSSRH_USERNAME` containing the account id to the Sonatype Jira
-   2. Create a secret called `OSSRH_TOKEN` containing the password to the Sonatype Jira
+   1. Create a secret called `OSSRH_USERNAME` containing the Sonatype user token username
+   2. Create a secret called `OSSRH_TOKEN` containing the Sonatype user token password
    3. Create a secret called `GPG_SECRET_KEY` using the text from your `secret.txt` file (with all the `LF`)
    4. Create a secret called `GPG_SECRET_KEY_PASSWORD` containing the password for your gpg secret key
 3. Create a GitHub Actions step to set up java with GPG secret key (explained [here](https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#Publishing-using-Apache-Maven))
@@ -255,10 +254,10 @@ We need to provide Github with credentials same as we did in local deployment.
       - name: Set up Maven Central Repository
         uses: actions/setup-java@v3
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
           cache: 'maven'
-          server-id: ossrh  # Value of the distributionManagement/repository/id field of the pom.xml
+          server-id: central  # Value of the distributionManagement/repository/id field of the pom.xml
           server-username: MAVEN_USERNAME # env variable for username in deploy
           server-password: MAVEN_CENTRAL_TOKEN # env variable for token in deploy
           gpg-private-key: ${{ secrets.GPG_SECRET_KEY }} # Value of the GPG private key to import - without any modification
@@ -271,7 +270,7 @@ We need to provide Github with credentials same as we did in local deployment.
         xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
         <servers>
             <server>
-                <id>ossrh</id>
+                <id>central</id>
                 <username>${env.MAVEN_USERNAME}</username>
                 <password>${env.MAVEN_CENTRAL_TOKEN}</password>
             </server>

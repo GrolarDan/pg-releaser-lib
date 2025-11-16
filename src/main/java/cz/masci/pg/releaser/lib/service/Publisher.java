@@ -1,5 +1,8 @@
 package cz.masci.pg.releaser.lib.service;
 
+/**
+ * Publisher service.
+ */
 public interface Publisher {
   /**
    * Publish message.
